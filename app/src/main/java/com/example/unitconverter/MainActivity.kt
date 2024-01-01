@@ -164,17 +164,36 @@ fun UnitConverter() {
                     isInputUnitExpanded.value = false
                 }) {
                     DropdownMenuItem(
-                        text = { Text(text = "Gram", fontSize = 16.sp) }, onClick = {
-                            convertFromUnitBtn.value = "Gram"
+                        text = { Text(text = "Centimeters", fontSize = 16.sp) },
+                        onClick = {
+                            convertFromUnitBtn.value = "Centimeters"
                             isInputUnitExpanded.value = false
-                            inputConversionFactor.doubleValue = 1000.00
+                            inputConversionFactor.doubleValue = 0.01
                             convertUnits()
                         }
                     )
                     DropdownMenuItem(
-                        text = { Text(text = "Kilogram", fontSize = 16.sp) },
+                        text = { Text(text = "Meters", fontSize = 16.sp) },
                         onClick = {
-                            convertFromUnitBtn.value = "Kilogram"
+                            convertFromUnitBtn.value = "Meters"
+                            isInputUnitExpanded.value = false
+                            inputConversionFactor.doubleValue = 1.00
+                            convertUnits()
+                        }
+                    )
+                    DropdownMenuItem(
+                        text = { Text(text = "Feet", fontSize = 16.sp) },
+                        onClick = {
+                            convertFromUnitBtn.value = "Feet"
+                            isInputUnitExpanded.value = false
+                            inputConversionFactor.doubleValue = 0.3048
+                            convertUnits()
+                        }
+                    )
+                    DropdownMenuItem(
+                        text = { Text(text = "Millimeters", fontSize = 16.sp) },
+                        onClick = {
+                            convertFromUnitBtn.value = "Millimeters"
                             isInputUnitExpanded.value = false
                             inputConversionFactor.doubleValue = 0.001
                             convertUnits()
@@ -192,19 +211,37 @@ fun UnitConverter() {
                     isOutputUnitExpanded.value = false
                 }) {
                     DropdownMenuItem(
-                        text = { Text(text = "Gram", fontSize = 16.sp) },
+                        text = { Text(text = "Centimeters", fontSize = 16.sp) },
                         onClick = {
-                            convertToUnitBtn.value = "Gram"
+                            convertToUnitBtn.value = "Centimeters"
                             isOutputUnitExpanded.value = false
-                            inputConversionFactor.doubleValue = 1000.00
+                            inputConversionFactor.doubleValue = 0.01
                             convertUnits()
                         }
                     )
                     DropdownMenuItem(
-                        text = { Text(text = "Kilogram", fontSize = 16.sp) },
+                        text = { Text(text = "Meters", fontSize = 16.sp) },
                         onClick = {
-                            convertToUnitBtn.value = "Kilogram"
+                            convertToUnitBtn.value = "Meters"
                             isOutputUnitExpanded.value = false
+                            inputConversionFactor.doubleValue = 1.00
+                            convertUnits()
+                        }
+                    )
+                    DropdownMenuItem(
+                        text = { Text(text = "Feet", fontSize = 16.sp) },
+                        onClick = {
+                            convertFromUnitBtn.value = "Feet"
+                            isInputUnitExpanded.value = false
+                            inputConversionFactor.doubleValue = 0.3048
+                            convertUnits()
+                        }
+                    )
+                    DropdownMenuItem(
+                        text = { Text(text = "Millimeters", fontSize = 16.sp) },
+                        onClick = {
+                            convertFromUnitBtn.value = "Millimeters"
+                            isInputUnitExpanded.value = false
                             inputConversionFactor.doubleValue = 0.001
                             convertUnits()
                         }
