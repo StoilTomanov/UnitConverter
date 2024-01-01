@@ -29,6 +29,7 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableDoubleStateOf
 import androidx.compose.runtime.mutableStateOf
@@ -64,11 +65,11 @@ class MainActivity : ComponentActivity() {
 fun UnitConverter() {
     var inputValue by remember { mutableStateOf("") }
     var outputValue by remember { mutableStateOf("") }
-    var convertFromUnitBtn by remember { mutableStateOf("Select") }
-    var convertToUnitBtn by remember { mutableStateOf("Select") }
-    var isInputUnitExpanded by remember { mutableStateOf(false) }
-    var isOutputUnitExpanded by remember { mutableStateOf(false) }
     var isInputFieldAllowed by remember { mutableStateOf(true) }
+    val convertFromUnitBtn = remember { mutableStateOf("Select") }
+    val convertToUnitBtn = remember { mutableStateOf("Select") }
+    val isOutputUnitExpanded = remember { mutableStateOf(false) }
+    val isInputUnitExpanded = remember { mutableStateOf(false) }
     val inputConversionFactor = remember { mutableDoubleStateOf(1.00) }
     val outputConversionFactor = remember { mutableDoubleStateOf(1.00) }
 
@@ -85,11 +86,37 @@ fun UnitConverter() {
     }
 
     fun checkIsInputFieldAllowed() {
-        if (convertFromUnitBtn == "Select" || convertToUnitBtn == "Select") {
+        if (convertFromUnitBtn.value == "Select" || convertToUnitBtn.value == "Select") {
             isInputFieldAllowed = false
             resetIOValues()
         } else {
             isInputFieldAllowed = true
+        }
+    }
+
+    @Composable
+    fun GetConvertUnitButtonComposable(
+        isDropdownUnitExpanded: MutableState<Boolean>,
+        convertUnitBtnText: MutableState<String>
+    ) {
+        return Button(
+            modifier = Modifier.border(
+                width = 4.dp,
+                color = if (!isInputFieldAllowed) {
+                    Color(244, 67, 54, 255)
+                } else Color(14, 100, 142, 255),
+                shape = RoundedCornerShape(25.dp)
+            ),
+            colors = ButtonDefaults.buttonColors(
+                containerColor = Color(14, 100, 142, 255)
+            ),
+            onClick = {
+                checkIsInputFieldAllowed()
+                isDropdownUnitExpanded.value = true
+                convertUnits()
+            }) {
+            Text(text = convertUnitBtnText.value, fontSize = 16.sp)
+            Icon(imageVector = Icons.Default.ArrowDropDown, contentDescription = "Button")
         }
     }
 
@@ -103,7 +130,7 @@ fun UnitConverter() {
         OutlinedTextField(
             value = inputValue,
             onValueChange = {
-                if (convertFromUnitBtn == "Select" || convertToUnitBtn == "Select") {
+                if (convertFromUnitBtn.value == "Select" || convertToUnitBtn.value == "Select") {
                     isInputFieldAllowed = false
                     resetIOValues()
                 } else {
@@ -129,32 +156,17 @@ fun UnitConverter() {
         Spacer(modifier = Modifier.height(15.dp))
         Row {
             Box {
-                Button(
-                    modifier = Modifier.border(
-                        width = 4.dp,
-                        color = if (!isInputFieldAllowed) {
-                            Color(244, 67, 54, 255)
-                        } else Color(14, 100, 142, 255),
-                        shape = RoundedCornerShape(25.dp)
-                    ),
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = Color(14, 100, 142, 255)
-                    ),
-                    onClick = {
-                        checkIsInputFieldAllowed()
-                        isInputUnitExpanded = true
-                        convertUnits()
-                    }) {
-                    Text(text = convertFromUnitBtn, fontSize = 16.sp)
-                    Icon(imageVector = Icons.Default.ArrowDropDown, contentDescription = "Button")
-                }
-                DropdownMenu(expanded = isInputUnitExpanded, onDismissRequest = {
-                    isInputUnitExpanded = false
+                GetConvertUnitButtonComposable(
+                    isDropdownUnitExpanded = isInputUnitExpanded,
+                    convertUnitBtnText = convertFromUnitBtn
+                )
+                DropdownMenu(expanded = isInputUnitExpanded.value, onDismissRequest = {
+                    isInputUnitExpanded.value = false
                 }) {
                     DropdownMenuItem(
                         text = { Text(text = "Gram", fontSize = 16.sp) }, onClick = {
-                            convertFromUnitBtn = "Gram"
-                            isInputUnitExpanded = false
+                            convertFromUnitBtn.value = "Gram"
+                            isInputUnitExpanded.value = false
                             inputConversionFactor.doubleValue = 1000.00
                             convertUnits()
                         }
@@ -162,8 +174,8 @@ fun UnitConverter() {
                     DropdownMenuItem(
                         text = { Text(text = "Kilogram", fontSize = 16.sp) },
                         onClick = {
-                            convertFromUnitBtn = "Kilogram"
-                            isInputUnitExpanded = false
+                            convertFromUnitBtn.value = "Kilogram"
+                            isInputUnitExpanded.value = false
                             inputConversionFactor.doubleValue = 0.001
                             convertUnits()
                         }
@@ -172,33 +184,18 @@ fun UnitConverter() {
             }
             Spacer(modifier = Modifier.width(20.dp))
             Box {
-                Button(
-                    modifier = Modifier.border(
-                        width = 4.dp,
-                        color = if (!isInputFieldAllowed) {
-                            Color(244, 67, 54, 255)
-                        } else Color(14, 100, 142, 255),
-                        shape = RoundedCornerShape(25.dp)
-                    ),
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = Color(14, 100, 142, 255)
-                    ),
-                    onClick = {
-                        checkIsInputFieldAllowed()
-                        isOutputUnitExpanded = true
-                        convertUnits()
-                    }) {
-                    Text(text = convertToUnitBtn, fontSize = 16.sp)
-                    Icon(imageVector = Icons.Default.ArrowDropDown, contentDescription = "Button")
-                }
-                DropdownMenu(expanded = isOutputUnitExpanded, onDismissRequest = {
-                    isOutputUnitExpanded = false
+                GetConvertUnitButtonComposable(
+                    isDropdownUnitExpanded = isOutputUnitExpanded,
+                    convertUnitBtnText = convertToUnitBtn
+                )
+                DropdownMenu(expanded = isOutputUnitExpanded.value, onDismissRequest = {
+                    isOutputUnitExpanded.value = false
                 }) {
                     DropdownMenuItem(
                         text = { Text(text = "Gram", fontSize = 16.sp) },
                         onClick = {
-                            convertToUnitBtn = "Gram"
-                            isOutputUnitExpanded = false
+                            convertToUnitBtn.value = "Gram"
+                            isOutputUnitExpanded.value = false
                             inputConversionFactor.doubleValue = 1000.00
                             convertUnits()
                         }
@@ -206,8 +203,8 @@ fun UnitConverter() {
                     DropdownMenuItem(
                         text = { Text(text = "Kilogram", fontSize = 16.sp) },
                         onClick = {
-                            convertToUnitBtn = "Kilogram"
-                            isOutputUnitExpanded = false
+                            convertToUnitBtn.value = "Kilogram"
+                            isOutputUnitExpanded.value = false
                             inputConversionFactor.doubleValue = 0.001
                             convertUnits()
                         }
